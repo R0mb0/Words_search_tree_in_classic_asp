@@ -1,2 +1,3 @@
-# Search_tree_in_classic_asp
-implementation of a Search Tree in Classic ASP
+# Words_search_tree_in_classic_asp
+
+Implementation of a Words Search Tree in Classic ASP
