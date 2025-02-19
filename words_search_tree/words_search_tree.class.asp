@@ -35,7 +35,7 @@
         Response.write "<br><h3> Debug print: " & message & " </h3><br>"
     End Function 
 
-    'Function to check if a character is a special character in Classic ASP.
+    'Function to check if a character is a special character.
     Private Function is_special_character(ByVal character)
         Select Case character
             Case "."
@@ -134,13 +134,138 @@
         End Select
     End Function 
 
-    'Function to check if is presente a special character inside a string and return the funded one. 
-    Private Function recognize_special_character(ByVal my_string)
-        If InStr(my_string, terminator) <> 0 Then 
-            recognize_special_character = terminator
+    'Function to check if a string contains a special character.
+    Function recognize_special_character(my_string)
+        If InStr(my_string, ".") <> 0 Then 
+            recognize_special_character = "."
             Exit Function 
         End if
+        If InStr(my_string, ",") <> 0 Then 
+            recognize_special_character = ","
+            Exit Function
+        End if
+        If InStr(my_string, ":") <> 0 Then 
+            recognize_special_character = ":"
+            Exit Function
+        End if
+        If InStr(my_string, ";") <> 0 Then 
+            recognize_special_character = ";"
+            Exit Function
+        End if
+        If InStr(my_string, "`") <> 0 Then 
+            recognize_special_character = "`"
+            Exit Function
+        End if
+        If InStr(my_string, "/") <> 0 Then 
+            recognize_special_character = "/"
+            Exit Function
+        End if
+        If InStr(my_string, "\") <> 0 Then 
+            recognize_special_character = "\"
+            Exit Function
+        End if
+        If InStr(my_string, "|") <> 0 Then 
+            recognize_special_character = "|"
+            Exit Function
+        End if
+        If InStr(my_string, "_") <> 0 Then 
+            recognize_special_character = "_"
+            Exit Function
+        End if
+        If InStr(my_string, "-") <> 0 Then 
+            recognize_special_character = "-"
+            Exit Function
+        End if
+        If InStr(my_string, "~") <> 0 Then 
+            recognize_special_character = "~"
+            Exit Function
+        End if
+        If InStr(my_string, "!") <> 0 Then 
+            recognize_special_character = "!"
+            Exit Function
+        End if 
+        If InStr(my_string, "@") <> 0 Then 
+            recognize_special_character = "@"
+            Exit Function
+        End if
+        If InStr(my_string, "#") <> 0 Then 
+            recognize_special_character = "#"
+            Exit Function
+        End if
+        If InStr(my_string, "$") <> 0 Then 
+            recognize_special_character = "$"
+            Exit Function
+        End if
+        If InStr(my_string, "%") <> 0 Then 
+            recognize_special_character = "%"
+            Exit Function
+        End if
+        If InStr(my_string, "^") <> 0 Then 
+            recognize_special_character = "^"
+            Exit Function
+        End if
+        If InStr(my_string, "&") <> 0 Then 
+            recognize_special_character = "&"
+            Exit Function
+        End if
+        If InStr(my_string, "*") <> 0 Then 
+            recognize_special_character = "*"
+            Exit Function
+        End if
+        If InStr(my_string, "(") <> 0 Then 
+            recognize_special_character = "("
+            Exit Function
+        End if
+        If InStr(my_string, ")") <> 0 Then 
+            recognize_special_character = ")"
+            Exit Function
+        End if
+        If InStr(my_string, "+") <> 0 Then 
+            recognize_special_character = "+"
+            Exit Function
+        End if
+        If InStr(my_string, "=") <> 0 Then 
+            recognize_special_character = "="
+            Exit Function
+        End if
+        If InStr(my_string, "{") <> 0 Then 
+            recognize_special_character = "{"
+            Exit Function
+        End if
+        If InStr(my_string, "[") <> 0 Then 
+            recognize_special_character = "["
+            Exit Function
+        End if
+        If InStr(my_string, "}") <> 0 Then 
+            recognize_special_character = "}"
+            Exit Function
+        End if
+        If InStr(my_string, "]") <> 0 Then 
+            recognize_special_character = "]"
+            Exit Function
+        End if
+        If InStr(my_string, "'") <> 0 Then 
+            recognize_special_character = "'"
+            Exit Function
+        End if
+        If InStr(my_string, "<") <> 0 Then 
+            recognize_special_character = "<"
+            Exit Function
+        End if
+        If InStr(my_string, ">") <> 0 Then 
+            recognize_special_character = ">"
+            Exit Function
+        End if
         recognize_special_character = null
+    End Function 
+
+    'Function to check if is presente a special character inside a string and return the funded one. 
+    Private Function recognize_terminator(ByVal my_string)
+        If InStr(my_string, terminator) <> 0 Then 
+            recognize_terminator = true
+            Exit Function 
+        End if
+        recognize_terminator = false
     End Function 
 
     'Function to convert a string into an array
@@ -177,24 +302,17 @@
                     search_base_element = true
                     Exit Function 
                 End If 
-            Else  
-                If temp = element Then 
-                    array_index = my_index
-                    search_base_element = true
-                    Exit Function 
-                End If 
             End If 
             my_index = my_index + 1
         Next 
         search_base_element = false
     End Function 
 
+    'This function ad an element 
     Private Function node(value)
-        Dim temp_array2(0)
-        temp_array2(0) = value
-        Dim temp_array1(0)
-        temp_array1(0) = temp_array2
-        node = temp_array1
+        Dim temp_array(0)
+        temp_array(0) = value
+        node = temp_array
     End Function 
 
     'Function to add a word inside the array
@@ -203,7 +321,8 @@
             Exit Function
         End If
         If UBound(array) = "-1" Then 'If the array is empty
-            array = node(word(index))
+            Redim preserve array(0)
+            array(0) = node(word(index))
             adding_word word, index + 1, array(0)
             Exit Function
         End If 
@@ -211,9 +330,7 @@
             adding_word word, index + 1, array(array_index)
             Exit Function
         Else
-            Dim temp_array(0)
-            temp_array(0) = word(index)
-            add_base_element temp_array ,array 
+            add_base_element node(word(index)) ,array 
             adding_word word, index + 1, array(UBound(array))
             Exit Function
         End If 
@@ -221,54 +338,79 @@
 
     'The public function to add a word in the search tree, in this case the word must be a string
     Public Function add_word(ByVal word)
-        If Not IsNull(terminator) Then 
-            If Len(word) > 1 Then 
-                Dim character
-                character = recognize_special_character(word)
-                If IsNull(character) Then 
-                    Dim my_word
-                    my_word = string_to_array(word)
-                    add_base_element terminator, my_word 
-                    Dim temp 
-                    adding_word my_word, 0, base_array 
-                Else 
-                    Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word contains the terminator")
-                End If 
-            Else 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The character: " & word & " is not a word")
-            End If 
-        Else 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "The class has not been initalizated")
+        If IsNull(terminator) Then 
+             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "The class has not been initalizated")
         End If 
+        If Not(Len(word) > 1) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The character: " & word & " is not a word")
+        End If 
+        If Not recognize_terminator(word) Then 
+            Dim my_word
+            my_word = string_to_array(word)
+            add_base_element terminator, my_word 
+            Dim temp 
+            adding_word my_word, 0, base_array 
+        Else 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word contains the terminator")
+            End If 
     End Function 
 
+    'Public function to add the words of a text 
+    Public Function add_text(ByVal text)
+        Dim temp 
+        Dim character
+        character = null
+        For Each temp In Split(text, " ")
+            character = recognize_special_character(temp)
+            If IsNull(character) Then 
+                add_word(temp)
+            Else 
+                add_word(Replace(temp, character, ""))
+            End If 
+        Next
+    End Function
+
     'Function to print an array line 
-    Private Function Write_array(ByRef array)
+    Private Function write_array(ByRef array, ByVal flag)
         Dim index 
         index = 0
         Dim temp 
         For Each temp In array
             If IsArray(temp) Then 
-                Write_array(array(index))
+                If UBound(temp) > 1 Then 
+                    write_array array(index), true
+                Else
+                    write_array array(index), false
+                End If 
             Else 
                 If temp = terminator Then 
                     Response.write "; "
                 Else
-                    Response.write temp
+                    If flag Then 
+                        Response.write(temp & "-<br>")
+                    Else
+                        Response.write(temp)
+                    End If  
                 End If 
             End If 
             index = index + 1
         Next 
-        Response.write "<br>"
     End Function 
 
     'Function to print all the elements inside the search tree 
     Public Function Write_all_elements()
-        If Not IsNull(terminator) Then 
-            Write_array(base_array)
-        Else 
+        If IsNull(terminator) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "The class has not been initalizated")
         End If 
+        Dim temp 
+        For Each temp In base_array
+            If UBound(temp) > 1 Then
+                write_array temp, true
+            Else
+                write_array temp, false
+            End If 
+            Response.write "<br>"
+        Next 
     End Function 
 
     End Class 
