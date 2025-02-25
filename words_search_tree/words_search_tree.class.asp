@@ -25,7 +25,7 @@
         remove_special_chars = false
         remove_letters = false 
         remove_numbers = false 
-        remove_all_numbers = false  
+        remove_all_numbers = false
     End Sub
         
     Sub class_terminate()
@@ -38,7 +38,7 @@
         remove_special_chars = nothing
         remove_letters = nothing 
         remove_numbers = nothing 
-        remove_all_numbers = nothing  
+        remove_all_numbers = nothing 
     End Sub
 
     'Function to initialize the class with the terminator 
@@ -303,7 +303,7 @@
     End Function 
 
     'This function ad an element 
-    Private Function node(value)
+    Private Function node(ByVal value)
         Dim temp_array(0)
         temp_array(0) = value
         node = temp_array
@@ -330,28 +330,34 @@
         End If 
     End Function 
 
-    'The public function to add a word in the search tree, in this case the word must be a string
-    Public Function add_word(ByVal word)
+    'Function to throw the errors 
+    Private Function create_allert(ByVal string_function, ByVal data)
         'Check if the class has been initializated
         If IsNull(terminator) Then 
-             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The class has not been initalizated")
-        End If  
-        'Check if in the word is present the terminator character 
-        If recognize_terminator(word) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word contains the terminator")
+             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The class has not been initalizated")
         End If 
         'Check if the word is a letter
-        If remove_letters and Not(Len(word) > 1) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The character: " & word & " is not a word")
-        End If
-        'Check if the word is a number
-        If remove_numbers and IsNumeric(word) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word: " & word & " is a number")
-        End If
-        'Check if the word has a special character
-        If remove_special_chars and Not(IsNull(recognize_special_character(word))) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word: " & word & " has a special character")
+        If remove_letters and Not(Len(data) > 1) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The character: " & data & " is not a word")
         End If 
+        'Check if in the word is present the terminator character 
+        If recognize_terminator(data) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The word contains the terminator")
+        End If 
+        'Check if the word is a number
+        If remove_numbers and IsNumeric(data) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The word: " & data & " is a number")
+        End If
+        'Check if a word is built with numbers or is a number
+        If remove_all_numbers and check_number_in_text(data) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The word: " & data & " contains numbers")
+        End If
+    End Function 
+
+    'The public function to add a word in the search tree, in this case the word must be a string
+    Public Function add_word(ByVal word)
+        'If necessary throw error 
+        create_allert "add_word", word
         Dim my_word 
         my_word = word
         'Check if a word is built with numbers 
@@ -471,28 +477,8 @@
         find_word = false 
     End Function 
 
-    'Function to check if a word is in the memory
-    Public Function is_present(word)
-        'Check if the class has been initializated
-        If IsNull(terminator) Then 
-             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The class has not been initalizated")
-        End If 
-        'Check if the word is a letter
-        If remove_letters and Not(Len(word) > 1) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The character: " & word & " is not a word")
-        End If 
-        'Check if in the word is present the terminator character 
-        If recognize_terminator(word) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The word contains the terminator")
-        End If 
-        'Check if the word is a number
-        If remove_numbers and IsNumeric(word) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The word: " & word & " is a number")
-        End If
-        'Check if a word is built with numbers or is a number
-        If remove_all_numbers and check_number_in_text(word) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The word: " & word & " contains numbers")
-        End If 
+    'Private Function to check if a word is in the memory
+    Private Function private_is_present(ByVal word)
         Dim my_word
         my_word = word
         'If is case sentive 
@@ -505,17 +491,61 @@
         Dim index
         For Each temp In base_array
             If temp(0) = my_word(0) Then 
-               is_present = find_word(my_word, 1, base_array(index))
+               private_is_present = find_word(my_word, 1, base_array(index))
                Exit Function 
             End If 
             index = index + 1
         Next
-        is_present = false 
+        private_is_present = false 
+    End Function 
+
+    'Private Function to check if a word is in the memory
+    Public Function is_present(ByVal word)
+        'If necessary throw error 
+        create_allert "is_present", word
+        ' now launch the original function
+        is_present = private_is_present(word)
+    End Function 
+
+    Private Function print_words(ByVal word, ByVal index, ByRef array, ByVal flag)
+        Dim temp 
+        'If the words is spent
+        If flag Then 
+            '------------------------------------------------------------------------------------------------------------------
+        Else
+            If search_base_element(word(index), array) Then 
+                If index = UBound(word) Then 
+                    print_words = word(index) & print_words(word, index + 1, array(array_index), true)
+                    Exit Function 
+                End If 
+                print_words = word(index) & print_words(word, index + 1, array(array_index), false)
+                Exit Function 
+            End If 
+        End If 
     End Function 
 
     'Function to search a word inside the memory
-    Public Function search_word(word)
-
+    Public Function search_word(ByVal word)
+        'In case of null argument 
+        If word = " " and (Len(word) = 0) Then 
+            search_word = " "
+            Exit Function 
+        End If 
+        'If necessary throw error 
+        create_allert "search_word", word
+        'If the word is present then exit 
+        If private_is_present(word) Then 
+            search_word = " "
+            Exit Function
+        End If 
+        Dim my_word
+        my_word = word
+        'If is case sentive 
+        If Not case_sensitive Then 
+            my_word = LCase(my_word)
+        End If 
+        my_word = string_to_array(word)
+        
     End Function 
 
     End Class 
