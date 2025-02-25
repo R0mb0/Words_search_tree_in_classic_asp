@@ -12,7 +12,7 @@
 
 - **Words**
   - nana 
-  - babu
+  - baba
   - banana
 
 ### Chart
