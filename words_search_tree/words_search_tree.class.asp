@@ -9,6 +9,7 @@
     Dim base_array '-> the array where save the infos
     Dim array_index '-> array index of last searched element 
     Dim case_sensitive '-> variable to set case sensitive
+    Dim remove_special_chars '-> varaible to remove special characters from the text
     Dim remove_letters '-> variable to remove single letters in the text
     Dim remove_numbers '-> variable to remove single numbers
     Dim remove_all_numbers '-> variable to remove all numbers
@@ -16,11 +17,12 @@
     ' Initialization and destruction'
     Sub class_initialize()
         characters_array = Array(".", ",", ":", ";", "`", "/", "\", "|", "_", "-", "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", "{", "[", "}", "]", "'", "<", ">")
-        letters_array = Array("q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m")
+        letters_array = Array("q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "è", "é", "ì", "í", "ò", "ó", "à", "á", "ù", "ú")
         numbers_array = Array("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
         terminator = null
         base_array = Array()
         case_sensitive = false
+        remove_special_chars = false
         remove_letters = false 
         remove_numbers = false 
         remove_all_numbers = false  
@@ -33,18 +35,25 @@
         base_array = nothing
         array_index = nothing
         case_sensitive = nothing
+        remove_special_chars = nothing
         remove_letters = nothing 
         remove_numbers = nothing 
         remove_all_numbers = nothing  
     End Sub
 
     'Function to initialize the class with the terminator 
-    Public Function initialize(ByVal termin, ByVal case_sens, ByVal remove_lett, ByVal remove_numb, ByVal remove_all_numb)
+    Public Function initialize(ByVal termin, ByVal case_sens, ByVal remove_special_char, ByVal remove_lett, ByVal remove_numb, ByVal remove_all_numb)
+        'Check if the terminator is a special character
         If Not(is_special_character(termin))Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "class_initialize - The terminator: " & termin & " is not a special character for thi reason is not valid")
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "initialize - The terminator: " & termin & " is not a special character for thi reason is not valid")
         End If
+        'Check if the two params are not true simultaneously
+        If remove_numb and remove_all_numb Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "initialize - remove_numbers and remove_all_numbers params could not be true simultaneously!")
+        End If 
         terminator = termin
         case_sensitive = case_sens
+        remove_special_chars = remove_special_char
         remove_letters = remove_lett 
         remove_numbers = remove_numb 
         remove_all_numbers = remove_all_numb  
@@ -166,6 +175,20 @@
         recognize_special_character = null
     End Function 
 
+    'Function to check if a string contains a special character.
+    Private Function remove_special_characters(ByVal my_string)
+        Dim temp_string
+        temp_string = my_string
+        Dim temp 
+        For Each temp In characters_array
+            If InStr(my_string, temp) <> 0 Then 
+                temp_string = Replace(temp_string, temp, "")
+            End if
+        Next
+        temp_string = Trim(temp_string)
+        remove_special_characters = temp_string
+    End Function 
+
     'Function to remove single letters from a text
     Private Function remove_single_letters_from_text(ByVal my_string)
         Dim temp_string
@@ -185,9 +208,9 @@
         Dim temp_string
         temp_string = my_string
         Dim temp
-        For Each temp In numbers_array
-            If InStr(temp_string, " " & temp & " ") <> 0 Then 
-                temp_string = Replace(temp_string, " " & temp & " ", " ")
+        For Each temp In Split(my_string, " ")
+            If IsNumeric(temp) Then 
+                temp_string = Replace(temp_string, temp & " ", "")
             End If 
         Next
         temp_string = Trim(temp_string)
@@ -217,6 +240,18 @@
         Next
         remove_all_numbers_from_text = remove_double_spaces(temp_string)
     End Function 
+
+    'Function to check if in the text there's a number
+    Private Function check_number_in_text(ByVal my_string)
+        Dim temp 
+        For Each temp In numbers_array
+            If InStr(my_string, temp) Then 
+                check_number_in_text = true 
+                Exit Function 
+            End If  
+        Next
+        check_number_in_text = false 
+    End Function
 
     'Function to check if is presente a special character inside a string and return the funded one. 
     Private Function recognize_terminator(ByVal my_string)
@@ -300,19 +335,23 @@
         'Check if the class has been initializated
         If IsNull(terminator) Then 
              Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The class has not been initalizated")
-        End If 
-        'Check if the word is a letter
-        If remove_letters and Not(Len(word) > 1) Then 
-            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The character: " & word & " is not a word")
-        End If 
+        End If  
         'Check if in the word is present the terminator character 
         If recognize_terminator(word) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word contains the terminator")
         End If 
+        'Check if the word is a letter
+        If remove_letters and Not(Len(word) > 1) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The character: " & word & " is not a word")
+        End If
         'Check if the word is a number
         If remove_numbers and IsNumeric(word) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word: " & word & " is a number")
         End If
+        'Check if the word has a special character
+        If remove_special_chars and Not(IsNull(recognize_special_character(word))) Then 
+            Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_word - The word: " & word & " has a special character")
+        End If 
         Dim my_word 
         my_word = word
         'Check if a word is built with numbers 
@@ -328,24 +367,50 @@
         adding_word my_word, 0, base_array 
     End Function 
 
+    'Private function to add word in more efficient way if the function "add_text" has been invoked
+    Private Function private_add_word(ByVal word)
+        Dim my_word 
+        my_word = word
+        'If is case sentive 
+        If Not case_sensitive Then 
+            my_word = LCase(my_word)
+        End If 
+        my_word = string_to_array(my_word)
+        add_base_element terminator, my_word  
+        adding_word my_word, 0, base_array 
+    End Function
+
     'Public function to add the words of a text 
     Public Function add_text(ByVal text)
+        'Check if the class has been initializated
         If IsNull(terminator) Then 
              Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_text - The class has not been initalizated")
         End If 
+        'Check if the text is a text
         If Not(InStr(text, " ") <> 0) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_text - " & text & " is not a text")
+        End If
+        Dim temp_text 
+        temp_text = text
+        'Remove special characters from text if necessary
+        If remove_special_chars Then 
+            temp_text = remove_special_characters(temp_text)
+        End If 
+        'Remove single letters from text if necessary
+        If remove_letters Then 
+            temp_text = remove_single_letters_from_text(temp_text)
+        End If 
+        'Remove single numbers from text if necessary
+        If remove_numbers Then 
+            temp_text = remove_single_numbers_from_text(temp_text)
+        End If 
+        'Remove all numbers from text if necessary
+        If remove_all_numbers Then 
+            temp_text = remove_all_numbers_from_text(temp_text)
         End If 
         Dim temp 
-        Dim character
-        character = null
-        For Each temp In Split(text, " ")
-            character = recognize_special_character(temp)
-            If IsNull(character) Then 
-                add_word(temp)
-            Else 
-                add_word(Replace(temp, character, ""))
-            End If 
+        For Each temp In Split(temp_text, " ")
+            private_add_word(temp)
         Next
     End Function
 
@@ -424,8 +489,8 @@
         If remove_numbers and IsNumeric(word) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The word: " & word & " is a number")
         End If
-        'Check if a word is built with numbers 
-        If remove_all_numbers and Not(IsNumeric(word)) Then 
+        'Check if a word is built with numbers or is a number
+        If remove_all_numbers and check_number_in_text(word) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "is_present - The word: " & word & " contains numbers")
         End If 
         Dim my_word
