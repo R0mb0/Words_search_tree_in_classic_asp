@@ -25,7 +25,7 @@
   >
   > **Where the params are:**
   >  - `termin` -> The terminator character (must be a special character as "-").
-  >  - `case_sens` -> case sensitive option, could be "true" or "false", if "true", all text will be transformed in lower case.
+  >  - `case_sens` -> case sensitive option, could be "true" or "false", if "false", all text will be transformed in lower case.
   >  - `remove_lett` -> remove single letters, could be "true" or "false", if "true", the sigle letters will be removed, for example " a ".
   >  - `remove_numb` -> remove number, could be "true" or "false", if "true" the numbers will be removed, for example " 123 "
   >  - `remove_all_numb` -> remove all number from text, cuold be "true" or "false", if true, all numbers will be removed, for example: "Hi123" became "Hi"
