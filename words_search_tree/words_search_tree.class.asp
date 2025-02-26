@@ -13,6 +13,7 @@
     Dim remove_letters '-> variable to remove single letters in the text
     Dim remove_numbers '-> variable to remove single numbers
     Dim remove_all_numbers '-> variable to remove all numbers
+    Dim flag2 '-> variable used to some iterative functions
 
     ' Initialization and destruction'
     Sub class_initialize()
@@ -26,6 +27,7 @@
         remove_letters = false 
         remove_numbers = false 
         remove_all_numbers = false
+        flag2 = false 
     End Sub
         
     Sub class_terminate()
@@ -39,6 +41,7 @@
         remove_letters = nothing 
         remove_numbers = nothing 
         remove_all_numbers = nothing 
+        flag2 = nothing
     End Sub
 
     'Function to initialize the class with the terminator 
@@ -421,30 +424,37 @@
     End Function
 
     'Function to print an array line 
-    Private Function write_array(ByRef array, ByVal flag)
-        Dim index 
-        index = 0
-        Dim temp 
-        For Each temp In array
-            If IsArray(temp) Then 
-                If UBound(temp) > 1 Then 
-                    write_array array(index), true
-                Else
-                    write_array array(index), false
+    Private Function write_array(ByRef array, ByVal flag1)
+        If flag1 then 
+            Dim my_flag
+            my_flag = flag1 
+            Dim temp 
+            For Each temp In array 
+                If Not(my_flag) Then  
+                    write_array = write_array & write_array(temp, my_flag)
+                Else 
+                    my_flag = Not(my_flag)
                 End If 
-            Else 
-                If temp = terminator Then 
-                    Response.write "; "
-                Else
-                    If flag Then 
-                        Response.write(temp & "-<br>")
-                    Else
-                        Response.write(temp)
-                    End If  
+            Next 
+        Else 
+            If Not(IsArray(array(0))) Then '<- Questo controllo si può eliminare perchè è la conseguenza di una struttura
+                If array(0) = terminator Then '<- Controllo del terminatore
+                    flag2 = true   
+                    write_array = "; "
+                Else 
+                    If flag2 Then 
+                        flag2 = false
+                        write_array = "->" & array(0) & write_array(array, true)
+                    Else 
+                        write_array = array(0) & write_array(array, true)
+                    End If 
                 End If 
+            Else
+                For Each temp In array
+                    write_array = write_array(temp, false)
+                Next
             End If 
-            index = index + 1
-        Next 
+        End If 
     End Function 
 
     'Function to print all the elements inside the search tree 
@@ -452,15 +462,7 @@
         If IsNull(terminator) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "Write_all_elements - The class has not been initalizated")
         End If 
-        Dim temp 
-        For Each temp In base_array
-            If UBound(temp) > 1 Then
-                write_array temp, true
-            Else
-                write_array temp, false
-            End If 
-            Response.write "<br>"
-        Next 
+        Response.write write_array(base_array, false)
     End Function 
 
     'Private function to find a word inside the tree
