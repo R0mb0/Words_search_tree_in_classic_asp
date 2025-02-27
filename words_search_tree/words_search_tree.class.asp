@@ -424,34 +424,34 @@
     End Function
 
     'Function to print an array line 
-    Private Function write_array(ByRef array, ByVal flag1)
-        If flag1 then 
+    Private Function write_array(ByRef array, ByVal flag1, ByVal chara)
+        If flag1 then 'If I've found a character
             Dim my_flag
             my_flag = flag1 
             Dim temp 
-            For Each temp In array 
+            For Each temp In array 'explore the arrays 
                 If Not(my_flag) Then  
-                    write_array = write_array & write_array(temp, my_flag)
+                    write_array = write_array & write_array(temp, my_flag, chara)
                 Else 
                     my_flag = Not(my_flag)
                 End If 
             Next 
         Else 
-            If Not(IsArray(array(0))) Then '<- Questo controllo si può eliminare perchè è la conseguenza di una struttura
-                If array(0) = terminator Then '<- Controllo del terminatore
+            If Not(IsArray(array(0))) Then 'if the first element is a character
+                If array(0) = terminator Then 'if I've found the terminator character
                     flag2 = true   
                     write_array = "; "
                 Else 
-                    If flag2 Then 
+                    If flag2 Then 'If I've found a new word
                         flag2 = false
-                        write_array = "->" & array(0) & write_array(array, true)
+                        write_array = chara & array(0) & write_array(array, true, chara)
                     Else 
-                        write_array = array(0) & write_array(array, true)
+                        write_array = array(0) & write_array(array, true, chara & array(0))
                     End If 
                 End If 
-            Else
+            Else 'If the array is the base_array
                 For Each temp In array
-                    write_array = write_array(temp, false)
+                    write_array = write_array(temp, false, chara)
                 Next
             End If 
         End If 
@@ -462,7 +462,7 @@
         If IsNull(terminator) Then 
             Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "Write_all_elements - The class has not been initalizated")
         End If 
-        Response.write write_array(base_array, false)
+        Response.write write_array(base_array, false, "")
     End Function 
 
     'Private function to find a word inside the tree
