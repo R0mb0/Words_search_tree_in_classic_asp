@@ -444,14 +444,14 @@
                 Else 
                     If flag2 Then 'If I've found a new word
                         flag2 = false
-                        write_array = chara & array(0) & write_array(array, true, chara)
+                        write_array = chara & array(0) & write_array(array, true, chara & array(0))
                     Else 
                         write_array = array(0) & write_array(array, true, chara & array(0))
                     End If 
                 End If 
             Else 'If the array is the base_array
                 For Each temp In array
-                    write_array = write_array(temp, false, chara)
+                    write_array = write_array & write_array(temp, false, chara) & "<br>"
                 Next
             End If 
         End If 
