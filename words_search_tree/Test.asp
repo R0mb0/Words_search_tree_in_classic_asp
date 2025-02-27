@@ -8,6 +8,9 @@
     tree.add_text("123 Nel mezzo del cammin di nostra45 vita mi ritrovai per una selva oscura, che la diritta via era smarrita.")
     tree.add_text("Ahi quanto a dir 890 qual era è cosa dura esta selva22 selvaggia e aspra e forte che nel pensier rinova la paura!")
     tree.Write_all_elements()
+    response.write("<h3>")
+    response.write tree.search_word("s", false)
+    response.write("</h3>")
 
     'Response.write "<br><h3> Posiedo la parola: di -> " & tree.is_present("di") & " </h3><br>"
     'Response.write "<br><h3> Posiedo la parola: dia -> " & tree.is_present("dia") & " </h3><br>"
