@@ -636,28 +636,28 @@
         End Function 
 
         '-----------------------------------------------------------------------------------------------------------------------------
-        Function ResizeArray(ByRef arr, ByVal newSize)
-            Dim tempArr
-            ReDim tempArr(newSize)
-
-            ' Copy the elements from the original array to the new array
-            Dim i
-            For i = LBound(arr) To UBound(arr)
-                tempArr(i) = arr(i)
-            Next
-
-            ResizeArray = tempArr
-        End Function
 
         'Function to save the array 
         Private Function add_array(ByRef array)
-            'Redim preserve array_indices(UBound(array_indices) + 1)
-            'array_indices(UBound(array_indices)) = array
+            If Ubound(array_indices) > 0 Then '<-- Se lo devo inizializzare
+                dp("Passo induttivo negli indici")
+                Redim preserve array_indices(UBound(array_indices) + 1)
+                array_indices(UBound(array_indices)) = array
+            Else 
+                If array_indices(0) = "" Then 
+                    dp("Ho inizializzato gli indici")
+                    array_indices(UBound(array_indices)) = array
+                Else
+                    dp("Secondo passo negli indici")
+                    Redim preserve array_indices(UBound(array_indices) + 1)
+                    array_indices(UBound(array_indices)) = array
+                End If 
+            End If 
         End Function 
         
         'Function to remove array from the indices and close the array -> during the loading this appens when there's "]"
         Private Function close_array()
-            Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) - 1)
+            'Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) - 1)
         End Function
 
         'Function to open a new array -> during the loading this appens when there's "["
@@ -668,8 +668,9 @@
                 array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))) = temp_array
                 add_array(array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))))
             Else 
+                dp("Ho inizializzato")
                 Redim Preserve base_array(Ubound(base_array) + 1) 
-                base_array(Ubound(base_array)) =  temp_array
+                base_array(Ubound(base_array)) = temp_array
                 add_array(base_array(Ubound(base_array)))
             End If 
         End Function
@@ -686,6 +687,7 @@
                 dp("Ho formattato")
                 Redim base_array(0)
             End If 
+            Redim array_indices(0) '<------ Initialize my array
             Dim temp_string 
             temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2)
             Dim length
