@@ -14,6 +14,7 @@
         Dim remove_numbers '-> variable to remove single numbers
         Dim remove_all_numbers '-> variable to remove all numbers
         Dim flag2 '-> variable used to some iterative functions
+        Dim array_indices '-> array where save the arrays indices during the tree loading 
 
         ' Initialization and destruction'
         Sub class_initialize()
@@ -28,6 +29,7 @@
             remove_numbers = false 
             remove_all_numbers = false
             flag2 = false 
+            array_indices = Array()
         End Sub
             
         Sub class_terminate()
@@ -42,6 +44,7 @@
             remove_numbers = nothing 
             remove_all_numbers = nothing 
             flag2 = nothing
+            array_indices = nothing
         End Sub
 
         'Function to initialize the class with the terminator 
@@ -606,6 +609,86 @@
             Else 
                 search_word = Replace(retrieve_words(my_word, 0, base_array, false, ""), " ", "; ")
             End If 
+        End Function 
+
+        'Private Funtion to serialize an array 
+        Private Function serialize_array(array)
+            Dim my_string 
+            If IsArray(array) Then 
+                my_string = "["
+                Dim temp 
+                For Each temp in array 
+                    my_string = my_string & serialize_array(temp)
+                Next 
+                my_string = my_string & "]"
+                serialize_array = my_string
+            Else 
+                serialize_array = array
+            End If 
+        End Function 
+
+        'Function to save the tree in a file 
+        Public Function save_tree(path)
+            Dim temp_string
+            temp_string = serialize_array(base_array)
+            dp(temp_string)
+            save_tree = temp_string
+        End Function 
+
+        '-----------------------------------------------------------------------------------------------------------------------------
+        'Function to save the array 
+        Private Function add_array(ByRef array)
+            Redim preserve array_indices(UBound(array_indices) + 1)
+            array_indices(UBound(array_indices)) = array
+        End Function 
+        
+        'Function to remove array from the indices and close the array -> during the loading this appens when there's "]"
+        Private Function close_array()
+            Redim preserve array_indices(UBound(array_indices) - 1)
+        End Function
+
+        'Function to open a new array -> during the loading this appens when there's "["
+        Private Function open_array()
+            Dim temp_array(0)
+            If UBound(array_indices) > 0 Then 
+                Redim Preserve array_indices(UBound(array_indices))(array_indices(UBound(array_indices)) + 1)
+                array_indices(UBound(array_indices))(array_indices(UBound(array_indices))) = temp_array
+                add_array(array_indices(UBound(array_indices))(array_indices(UBound(array_indices))))
+            Else 
+                Redim Preserve base_array(Ubound(base_array) + 1) 
+                base_array(Ubound(base_array)) =  temp_array
+                add_array(base_array(Ubound(base_array)))
+            End If 
+        End Function
+
+        'Function to add a new element in the array during the loading operation 
+        Private Function add_element(ByVal element)
+            Redim Preserve array_indices(UBound(array_indices))(array_indices(UBound(array_indices)) + 1)
+            array_indices(UBound(array_indices))(array_indices(UBound(array_indices))) = element
+        End Function 
+
+        'Funtion to load the tree from a file 
+        Public Function load_tree(path)
+            If UBound(base_array) > 0 Then 
+                Redim base_array(0)
+            End If 
+            Dim temp_string 
+            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2)
+            Dim length
+            length = Len(temp_string)
+            Dim index 
+            For index = 0 to length - 1
+                Dim character
+                character = Left(Right(temp_string,(length - index)), (1))
+                Select Case character
+                    Case "["
+                        open_array()
+                    Case "]"
+                        close_array()
+                    Case Else 
+                        add_element(character)
+                End Select 
+            Next 
         End Function 
 
     End Class 
