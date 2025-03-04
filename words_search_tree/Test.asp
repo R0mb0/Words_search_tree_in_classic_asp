@@ -17,5 +17,5 @@
     'Response.write "<br><h3> Posiedo la parola: dia -> " & tree.is_present("dia") & " </h3><br>"
     'Response.write "<br><h3> Posiedo la parola: a -> " & tree.is_present("a") & " </h3><br>"
 
-    tree.save_tree("banana")
+    tree.load_tree(tree.save_tree("banana"))
 %> 

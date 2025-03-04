@@ -636,24 +636,37 @@
         End Function 
 
         '-----------------------------------------------------------------------------------------------------------------------------
+        Function ResizeArray(ByRef arr, ByVal newSize)
+            Dim tempArr
+            ReDim tempArr(newSize)
+
+            ' Copy the elements from the original array to the new array
+            Dim i
+            For i = LBound(arr) To UBound(arr)
+                tempArr(i) = arr(i)
+            Next
+
+            ResizeArray = tempArr
+        End Function
+
         'Function to save the array 
         Private Function add_array(ByRef array)
-            Redim preserve array_indices(UBound(array_indices) + 1)
-            array_indices(UBound(array_indices)) = array
+            'Redim preserve array_indices(UBound(array_indices) + 1)
+            'array_indices(UBound(array_indices)) = array
         End Function 
         
         'Function to remove array from the indices and close the array -> during the loading this appens when there's "]"
         Private Function close_array()
-            Redim preserve array_indices(UBound(array_indices) - 1)
+            Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) - 1)
         End Function
 
         'Function to open a new array -> during the loading this appens when there's "["
         Private Function open_array()
             Dim temp_array(0)
             If UBound(array_indices) > 0 Then 
-                Redim Preserve array_indices(UBound(array_indices))(array_indices(UBound(array_indices)) + 1)
-                array_indices(UBound(array_indices))(array_indices(UBound(array_indices))) = temp_array
-                add_array(array_indices(UBound(array_indices))(array_indices(UBound(array_indices))))
+                Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) + 1)
+                array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))) = temp_array
+                add_array(array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))))
             Else 
                 Redim Preserve base_array(Ubound(base_array) + 1) 
                 base_array(Ubound(base_array)) =  temp_array
@@ -663,13 +676,14 @@
 
         'Function to add a new element in the array during the loading operation 
         Private Function add_element(ByVal element)
-            Redim Preserve array_indices(UBound(array_indices))(array_indices(UBound(array_indices)) + 1)
-            array_indices(UBound(array_indices))(array_indices(UBound(array_indices))) = element
+            'Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) + 1)
+            'array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))) = element
         End Function 
 
         'Funtion to load the tree from a file 
         Public Function load_tree(path)
             If UBound(base_array) > 0 Then 
+                dp("Ho formattato")
                 Redim base_array(0)
             End If 
             Dim temp_string 
