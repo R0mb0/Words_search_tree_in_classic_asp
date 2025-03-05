@@ -18,4 +18,6 @@
     'Response.write "<br><h3> Posiedo la parola: a -> " & tree.is_present("a") & " </h3><br>"
 
     tree.load_tree(tree.save_tree("banana"))
+
+    tree.save_tree("banana")
 %> 
