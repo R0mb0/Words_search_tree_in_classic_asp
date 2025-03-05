@@ -13,9 +13,8 @@
         Dim remove_letters '-> variable to remove single letters in the text
         Dim remove_numbers '-> variable to remove single numbers
         Dim remove_all_numbers '-> variable to remove all numbers
-        Dim flag2 '-> variable used to some iterative functions
-        Dim array_indices '-> array where save the arrays indices during the tree loading 
-        Dim ghost '-> This is a temp array used to avoid this error: 
+        Dim flag2 '-> variable used to some iterative functions 
+        Dim absolute_index
 
         ' Initialization and destruction'
         Sub class_initialize()
@@ -30,8 +29,7 @@
             remove_numbers = false 
             remove_all_numbers = false
             flag2 = false 
-            array_indices = Array()
-            ghost = Array()
+            absolute_index = 0
         End Sub
             
         Sub class_terminate()
@@ -46,8 +44,7 @@
             remove_numbers = nothing 
             remove_all_numbers = nothing 
             flag2 = nothing
-            array_indices = nothing
-            ghost = nothing
+            absolute_index = nothing
         End Sub
 
         'Function to initialize the class with the terminator 
@@ -640,64 +637,12 @@
 
         '-----------------------------------------------------------------------------------------------------------------------------
 
-        Private Function set_ghost(ByRef array)
-            ghost = array
-        End Function 
-
-        'Function to save the array 
-        Private Function add_array(ByRef array)
-            If Ubound(array_indices) > 0 Then '<-- Se lo devo inizializzare
-                dp("Passo induttivo negli indici")
-                Redim Preserve array_indices(UBound(array_indices) + 1)
-                array_indices(UBound(array_indices)) = array
-            Else 
-                If array_indices(0) = null Then 
-                    dp("Ho inizializzato gli indici")
-                    array_indices(UBound(array_indices)) = array
-                Else
-                    dp("Secondo passo negli indici")
-                    Redim Preserve array_indices(UBound(array_indices) + 1)
-                    array_indices(UBound(array_indices)) = array
-                End If 
+       'Function to get a character from a string using a index.
+       Private Function get_character(index, text)
+            If IsNumeric(index) and index <= Len(text) Then 
+                get_character = Left(Right(text,(length - index)), (1))
             End If 
-        End Function 
-        
-        'Function to remove array from the indices and close the array -> during the loading this appens when there's "]"
-        Private Function close_array()
-            dp("Ho chiuso un array")
-            Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) - 1)
-        End Function
-
-        'Function to open a new array -> during the loading this appens when there's "["
-        Private Function open_array()
-            Dim temp_array(0)
-            If UBound(array_indices) > 0 Then 
-                dp("Sto concatenenando gli array")
-                Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) + 1)
-                array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))) = temp_array
-                set_ghost(array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))))
-                add_array(ghost)
-            Else 
-                dp("Inserisco un array in quello di base")
-                If Ubound(base_array) = 0 and base_array(0) = null Then 
-                    dp("Array di base è completamente vuoto")
-                    base_array(Ubound(base_array)) = temp_array
-                    add_array(base_array(Ubound(base_array)))
-                Else 
-                    dp("Array di base contiene almento un elemento ")
-                    Redim Preserve base_array(Ubound(base_array) + 1) 
-                    base_array(Ubound(base_array)) = temp_array
-                    add_array(base_array(Ubound(base_array)))
-                End If
-            End If 
-        End Function
-
-        'Function to add a new element in the array during the loading operation 
-        Private Function add_element(ByVal element)
-            dp("sto aggiungendo un elemento di base")
-            Redim Preserve [array_indices(UBound(array_indices))](UBound(array_indices(UBound(array_indices))) + 1)
-            array_indices(UBound(array_indices))(UBound(array_indices(UBound(array_indices)))) = element
-        End Function 
+       End Function 
 
         'Funtion to load the tree from a file 
         Public Function load_tree(path)
@@ -706,29 +651,14 @@
                 Redim base_array(0)
                 base_array(0) = null 
             End If 
-            '*********************
-            Redim array_indices(0) '<------ Initialize my arrays
-            array_indices(0) = null 
-            Redim ghost(0)
-            ghost(0) = null 
-            '********************
             Dim temp_string 
-            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2)
+            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2) '<------ Removed the first and the last parenthesis 
+            temp_string = temp_string & "=" '<------ Added termiantor for the extraction 
             Dim length
             length = Len(temp_string)
-            Dim index 
-            For index = 0 to length - 1
-                Dim character
-                character = Left(Right(temp_string,(length - index)), (1))
-                Select Case character
-                    Case "["
-                        open_array()
-                    Case "]"
-                        close_array()
-                    Case Else 
-                        add_element(character)
-                End Select 
-            Next 
+
+            
+            
         End Function 
 
     End Class 
