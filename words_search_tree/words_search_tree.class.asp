@@ -14,7 +14,8 @@
         Dim remove_numbers '-> variable to remove single numbers
         Dim remove_all_numbers '-> variable to remove all numbers
         Dim flag2 '-> variable used to some iterative functions 
-        Dim absolute_index
+        Dim absolute_index '-> index used on the load function for the position in the string 
+        Dim temp_text '->variable where store text
 
         ' Initialization and destruction'
         Sub class_initialize()
@@ -30,6 +31,7 @@
             remove_all_numbers = false
             flag2 = false 
             absolute_index = 0
+            temp_text = ""
         End Sub
             
         Sub class_terminate()
@@ -45,6 +47,7 @@
             remove_all_numbers = nothing 
             flag2 = nothing
             absolute_index = nothing
+            temp_text = nothing
         End Sub
 
         'Function to initialize the class with the terminator 
@@ -640,9 +643,43 @@
        'Function to get a character from a string using a index.
        Private Function get_character(index, text)
             If IsNumeric(index) and index <= Len(text) Then 
-                get_character = Left(Right(text,(length - index)), (1))
+                get_character = Left(Right(text,(Len(text) - index)), (1))
             End If 
        End Function 
+
+        'Function to add element the the array
+        Private Function add_from_text(ByRef array)
+            'Analizzo la stringa 
+            Dim character
+            character = get_character(absolute_index, temp_text)
+            Select Case character
+                    Case "["
+                        Dim temp_array(0)
+                        temp_array(0) = null '<---- Array to add
+                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
+                        If UBound(array) = 0 and array(0) = null Then 
+                            array(0) = temp_array
+                            add_from_text = add_from_text(array(0))
+                        Else 
+                            Redim Preserve array(UBound(array) + 1)
+                            array(UBound(array)) = temp_array
+                            add_from_text = add_from_text(array(UBound(array)))
+                        End If 
+                    Case "]"
+                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
+                        add_from_text = add_from_text(array)
+                    Case Else
+                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
+                        If UBound(array) = 0 and array(0) = null Then 
+                            array(0) = character
+                            add_from_text = add_from_text(array)
+                        Else 
+                            Redim Preserve array(UBound(array) + 1)
+                            array(UBound(array)) = character
+                            add_from_text = add_from_text(aarray)
+                        End If     
+                End Select
+        End Function 
 
         'Funtion to load the tree from a file 
         Public Function load_tree(path)
@@ -652,13 +689,32 @@
                 base_array(0) = null 
             End If 
             Dim temp_string 
-            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2) '<------ Removed the first and the last parenthesis 
-            temp_string = temp_string & "=" '<------ Added termiantor for the extraction 
+            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2) '<------ Removed the first and the last parenthesis
             Dim length
             length = Len(temp_string)
+            temp_text = temp_string
+            Dim temp_array(0)
+            temp_array(0) = null '<---- Array to add in the base array
 
-            
-            
+            Do While absolute_index < length
+                If get_character(absolute_index, temp_string) = "[" Then 
+                    If UBound(base_array) = 0 and base_array(0) = null Then 
+                        base_array(0) = temp_array
+                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho comunque letto 
+                        add_from_text(base_array(0))
+                        'qui chiamo la funzione iterativa 
+                    Else 
+                        Redim Preserve base_array(UBound(base_array) + 1)
+                        base_array(UBound(base_array)) = temp_array
+                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho comunque letto 
+                        add_from_text(base_array(UBound(base_array)))
+                        'qui chiamo la funzione iterativa
+                    End If 
+                Else
+                    Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - Irregular File: " & get_character(absolute_index, temp_string))
+                End If 
+                absolute_index = absolute_index + 1 '<---- Questo incremento lo tengo solo se mi garantisco che ritorno con l'indice che non è incrementato
+            Loop 
         End Function 
 
     End Class 
