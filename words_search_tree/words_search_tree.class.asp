@@ -615,7 +615,7 @@
         End Function 
 
         'Private Funtion to serialize an array 
-        Private Function serialize_array(array)
+        Private Function serialize_array(ByVal array)
             Dim my_string 
             If IsArray(array) Then 
                 my_string = "["
@@ -631,7 +631,7 @@
         End Function 
 
         'Function to save the tree in a file 
-        Public Function save_tree(path)
+        Public Function save_tree(ByRef path)
             Dim temp_string
             temp_string = serialize_array(base_array)
             dp(temp_string)
@@ -641,48 +641,39 @@
         '-----------------------------------------------------------------------------------------------------------------------------
 
        'Function to get a character from a string using a index.
-       Private Function get_character(index, text)
+       Private Function get_character(ByVal index, ByRef text)
             If IsNumeric(index) and index <= Len(text) Then 
                 get_character = Left(Right(text,(Len(text) - index)), (1))
+            Else 
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class","get_character - Irregular Index: " & text)
             End If 
        End Function 
 
-        'Function to add element the the array
-        Private Function add_from_text(ByRef array)
-            'Analizzo la stringa 
+       'Function to add element in the array 
+       Private Function add_to_array(ByVal element, ByRef array)
+            If UBound(array) = 0 and IsNull(array(0)) Then 
+                array(0) = element
+            Else 
+                Redim Preserve array(UBound(array) + 1)
+                array(UBound(array)) = element
+            End If 
+       End Function 
+
+       'Function to add element the the array
+       Private Function add_from_text(ByRef array)
             Dim character
             character = get_character(absolute_index, temp_text)
-            Select Case character
-                    Case "["
-                        Dim temp_array(0)
-                        temp_array(0) = null '<---- Array to add
-                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
-                        If UBound(array) = 0 and array(0) = null Then 
-                            array(0) = temp_array
-                            add_from_text = add_from_text(array(0))
-                        Else 
-                            Redim Preserve array(UBound(array) + 1)
-                            array(UBound(array)) = temp_array
-                            add_from_text = add_from_text(array(UBound(array)))
-                        End If 
-                    Case "]"
-                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
-                        add_from_text = add_from_text(array)
-                    Case Else
-                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho letto 
-                        If UBound(array) = 0 and array(0) = null Then 
-                            array(0) = character
-                            add_from_text = add_from_text(array)
-                        Else 
-                            Redim Preserve array(UBound(array) + 1)
-                            array(UBound(array)) = character
-                            add_from_text = add_from_text(aarray)
-                        End If     
-                End Select
-        End Function 
+            Do While character  <> "]"
+                If 
+                absolute_index = absolute_index + 1
+                character = get_character(absolute_index, temp_text)
+            Loop 
+            absolute_index = absolute_index + 1
+       End Function 
 
         'Funtion to load the tree from a file 
         Public Function load_tree(path)
+            'Prima do tutto formatto l'array di base se devo 
             If UBound(base_array) > 0 Then 
                 dp("Ho formattato: Base_array")
                 Redim base_array(0)
@@ -695,25 +686,16 @@
             temp_text = temp_string
             Dim temp_array(0)
             temp_array(0) = null '<---- Array to add in the base array
-
             Do While absolute_index < length
-                If get_character(absolute_index, temp_string) = "[" Then 
-                    If UBound(base_array) = 0 and base_array(0) = null Then 
-                        base_array(0) = temp_array
-                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho comunque letto 
-                        add_from_text(base_array(0))
-                        'qui chiamo la funzione iterativa 
-                    Else 
-                        Redim Preserve base_array(UBound(base_array) + 1)
-                        base_array(UBound(base_array)) = temp_array
-                        absolute_index = absolute_index + 1 '<--- Incremento l'indice perché ho comunque letto 
-                        add_from_text(base_array(UBound(base_array)))
-                        'qui chiamo la funzione iterativa
-                    End If 
+                If get_character(absolute_index, temp_text) = "[" Then
+                    add_to_array temp_array, base_array
+                    absolute_index = absolute_index + 1
+                    add_from_text(base_array(UBound(base_array)))
+
                 Else
                     Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - Irregular File: " & get_character(absolute_index, temp_string))
-                End If 
-                absolute_index = absolute_index + 1 '<---- Questo incremento lo tengo solo se mi garantisco che ritorno con l'indice che non è incrementato
+                End If  
+                
             Loop 
         End Function 
 
