@@ -631,10 +631,20 @@
         End Function 
 
         'Function to save the tree in a file 
-        Public Function save_tree(ByRef path)
+        Public Function save_tree(ByVal path)
             Dim temp_string
             temp_string = serialize_array(base_array)
-            dp(temp_string)
+            'Save string to file 
+            Dim fs
+            Dim f
+            Set fs = Server.CreateObject("Scripting.FileSystemObject")
+            Set f = fs.CreateTextFile(path, true)
+            f.write(temp_string)
+            f.close
+            Set f = nothing
+            Set fs = nothing
+            'End saving string to file 
+            'Return for debug purpose
             save_tree = temp_string
         End Function 
 
@@ -679,18 +689,29 @@
         End Function 
 
         'Funtion to load the tree from a file 
-        Public Function load_tree(path)
-            'Prima do tutto formatto l'array di base se devo 
+        Public Function load_tree(ByVal path)
+            'Read part 
+            Dim fs
+            Dim t
+            Dim s
+            Set fs = Server.CreateObject("Scripting.FileSystemObject")
+            set t = fs.OpenTextFile(path, 1, false)
+            s = t.ReadAll
+            t.close
+            Set t = nothing
+            Set fs = nothing
+            'End read part
+            'If necessary format base array
             If UBound(base_array) > 0 Then 
                 Redim base_array(0)
                 base_array(0) = null 
             End If 
             Dim temp_string 
-            temp_string = Left(Right(path, Len(path)- 1), Len(path)- 2) '<------ Removed the first and the last parenthesis
+            temp_string = Left(Right(s, Len(s)- 1), Len(s)- 2) '<------ Removed the first and the last parenthesis
             Dim length
             length = Len(temp_string)
             temp_text = temp_string
-            'Inizio il Loop 
+            'Starting Loop 
             Do While absolute_index < length
                 If get_character(absolute_index, temp_text) = "[" Then
                     absolute_index = absolute_index + 1 '<---- Had read
