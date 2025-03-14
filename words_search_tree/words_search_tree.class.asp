@@ -638,44 +638,50 @@
             save_tree = temp_string
         End Function 
 
-        '-----------------------------------------------------------------------------------------------------------------------------
-
        'Function to get a character from a string using a index.
-       Private Function get_character(ByVal index, ByRef text)
+        Private Function get_character(ByVal index, ByRef text)
             If IsNumeric(index) and index <= Len(text) Then 
                 get_character = Left(Right(text,(Len(text) - index)), (1))
             Else 
                 Call Err.Raise(vbObjectError + 10, "words_search_tree.class","get_character - Irregular Index: " & text)
             End If 
-       End Function 
+        End Function 
 
-       'Function to add element in the array 
-       Private Function add_to_array(ByVal element, ByRef array)
-            If UBound(array) = 0 and IsNull(array(0)) Then 
-                array(0) = element
-            Else 
-                Redim Preserve array(UBound(array) + 1)
-                array(UBound(array)) = element
-            End If 
-       End Function 
-
-       'Function to add element the the array
-       Private Function add_from_text(ByRef array)
+        'Function to add arrays following the text
+        Private Function add_from_text()
+            Dim returnArray() '<---- To avoid this error: This array is fixed or temporarily locked
+            ReDim returnArray(0)
+            returnArray(0) = Null 
             Dim character
             character = get_character(absolute_index, temp_text)
-            Do While character  <> "]"
-                If 
-                absolute_index = absolute_index + 1
+            Do While character <> "]"
+                If character = "[" Then
+                    absolute_index = absolute_index + 1 '<---- Had read
+                    If IsNull(returnArray(0)) Then 
+                        returnArray(0) = add_from_text()
+                    Else 
+                        ReDim Preserve returnArray(UBound(returnArray) + 1)
+                        returnArray(UBound(returnArray)) = add_from_text()
+                    End If 
+                Else 
+                    absolute_index = absolute_index + 1 '<---- Had read
+                    If IsNull(returnArray(0)) Then 
+                        returnArray(0) = character
+                    Else 
+                        ReDim Preserve returnArray(UBound(returnArray) + 1)
+                        returnArray(UBound(returnArray)) = character
+                    End If 
+                End If 
                 character = get_character(absolute_index, temp_text)
             Loop 
-            absolute_index = absolute_index + 1
-       End Function 
+            absolute_index = absolute_index + 1 '<---- Had read
+            add_from_text = returnArray
+        End Function 
 
         'Funtion to load the tree from a file 
         Public Function load_tree(path)
             'Prima do tutto formatto l'array di base se devo 
             If UBound(base_array) > 0 Then 
-                dp("Ho formattato: Base_array")
                 Redim base_array(0)
                 base_array(0) = null 
             End If 
@@ -684,20 +690,21 @@
             Dim length
             length = Len(temp_string)
             temp_text = temp_string
-            Dim temp_array(0)
-            temp_array(0) = null '<---- Array to add in the base array
+            'Inizio il Loop 
             Do While absolute_index < length
                 If get_character(absolute_index, temp_text) = "[" Then
-                    add_to_array temp_array, base_array
-                    absolute_index = absolute_index + 1
-                    add_from_text(base_array(UBound(base_array)))
-
+                    absolute_index = absolute_index + 1 '<---- Had read
+                    If IsNull(base_array(0)) Then '<---- If the array has been just initialized 
+                        base_array(0) = add_from_text()
+                    Else 
+                        Redim Preserve base_array(UBound(base_array) + 1)
+                        base_array(UBound(base_array)) = add_from_text()
+                    End If 
                 Else
+                    'If the string is not regular
                     Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - Irregular File: " & get_character(absolute_index, temp_string))
-                End If  
-                
+                End If 
             Loop 
-        End Function 
-
+        End Function
     End Class 
 %>
