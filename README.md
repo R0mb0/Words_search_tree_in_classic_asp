@@ -34,4 +34,21 @@
   >  - `remove_numb` -> remove number, could be "true" or "false", if "true" the numbers will be removed, for example " 123 "
   >  - `remove_all_numb` -> remove all numbers from text, cuold be "true" or "false", if true, all numbers will be removed, for example: "Hi123" became "Hi"
   >
-  >    **⚠️ "remove_numb" and "remove_all_numb" params could not be true simultaneously!**
+  > **⚠️ "remove_numb" and "remove_all_numb" params could not be true simultaneously!**
+- Add a word to the tree -> `Public Function add_word(ByVal word)`
+- Add all text words in the tree -> `Public Function add_text(ByVal text)`
+- Print all elements inside the tree -> `Public Function Write_all_elements()`
+- Check if a word is in the tree -> `Public Function is_present(ByVal word)`
+- Search a word inside the memory -> `Public Function search_word(ByVal word, ByVal is_array)`
+  >
+  > **This function is usefull to search a word inside the tree, for example if `word` = "hom" the function will return: "home", "homo" and "hometown"**
+  > - `word` is the word to search, it could be a part of a word, if an entire word is passed to the function, the function will return null.
+  > - `is_array` change the output of the function, if `true` the function will return an array with all results, else, will be returned a string
+- Function to save to file the tree state -> `Public Function save_tree(ByVal path)`
+  > **Where `path` is the string with the location with the file to save location**
+- Function to load the saved state tree in a file -> `Public Function load_tree(ByVal path)`
+  > **Where `path` is the string with the location with the file to load location**
+
+## How to use 
+
+> `From: Test.asp`
