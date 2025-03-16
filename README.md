@@ -27,12 +27,12 @@
 - Initialize the class -> `Public Function initialize(ByVal termin, ByVal case_sens, ByVal remove_special_char, ByVal remove_lett, ByVal remove_numb, ByVal remove_all_numb)`
   >
   > **Where the params are:**
-  >  - `termin` -> The terminator character (must be a special character as "-").
-  >  - `case_sens` -> case sensitive option, could be "true" or "false", if "false", all text will be transformed in lower case.
-  >  - `remove_special_char` -> remove special characters, could be "true" or "false", if true, the special chacters will be removed from the text.
-  >  - `remove_lett` -> remove single letters, could be "true" or "false", if "true", the sigle letters will be removed, for example " a ".
-  >  - `remove_numb` -> remove number, could be "true" or "false", if "true" the numbers will be removed, for example " 123 "
-  >  - `remove_all_numb` -> remove all numbers from text, cuold be "true" or "false", if true, all numbers will be removed, for example: "Hi123" became "Hi"
+  > - `termin` -> The terminator character (must be a special character as "-").
+  > - `case_sens` -> case sensitive option, could be "true" or "false", if "false", all text will be transformed in lower case.
+  > - `remove_special_char` -> remove special characters, could be "true" or "false", if true, the special chacters will be removed from the text.
+  > - `remove_lett` -> remove single letters, could be "true" or "false", if "true", the sigle letters will be removed, for example " a ".
+  > - `remove_numb` -> remove number, could be "true" or "false", if "true" the numbers will be removed, for example " 123 "
+  > - `remove_all_numb` -> remove all numbers from text, cuold be "true" or "false", if true, all numbers will be removed, for example: "Hi123" became "Hi"
   >
   > **⚠️ "remove_numb" and "remove_all_numb" params could not be true simultaneously!**
 - Add a word to the tree -> `Public Function add_word(ByVal word)`
@@ -94,4 +94,3 @@
        tree.search_word("bana", false)
      %>
      ```
-    
