@@ -54,7 +54,7 @@
 > From: `Test.asp`
 
 1. Initialize the class
-   ```
+   ```asp
    <%@LANGUAGE="VBSCRIPT"%>
    <!--#include file="words_search_tree.class.asp"-->
    <% 
@@ -65,32 +65,32 @@
 2. Add values to tree   
    Possibilities:  
    - Load tree from file
-     ```
+     ```asp
      tree.load_tree("path")
      ```
    - Add words
-     ```
+     ```asp
      tree.add_word("nana")
      tree.add_word("baba")
      tree.add_word("banana")
      ```
    - Add text
-     ```
+     ```asp
      tree.add_text("Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, che la diritta via era smarrita.")
      tree.add_text("Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte che nel pensier rinova la paura!")
      ```
 3. Save the state of tree
-   ```
+   ```asp
    tree.save_tree("path")
    ```  
 4. Interrogate the tree   
    Possibilities:
    - Check if a word is in the tree
-     ```
+     ```asp
      tree.is_present("banana")
      ```
    - Search a word inside the tree
-     ```
+     ```asp
        tree.search_word("bana", false)
      %>
      ```
