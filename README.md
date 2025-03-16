@@ -51,4 +51,47 @@
 
 ## How to use 
 
-> `From: Test.asp`
+> From: `Test.asp`
+
+1. Initialize the class
+   ```
+   <%@LANGUAGE="VBSCRIPT"%>
+   <!--#include file="words_search_tree.class.asp"-->
+   <% 
+      Dim tree
+      Set tree = new words_search_tree
+      tree.initialize "-", true, true, true, false, true
+   ```
+2. Add values to tree   
+   Possibilities:  
+   - Load tree from file
+     ```
+     tree.load_tree("path")
+     ```
+   - Add words
+     ```
+     tree.add_word("nana")
+     tree.add_word("baba")
+     tree.add_word("banana")
+     ```
+   - Add text
+     ```
+     tree.add_text("Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, che la diritta via era smarrita.")
+     tree.add_text("Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte che nel pensier rinova la paura!")
+     ```
+3. Save the state of tree
+   ```
+   tree.save_tree("path")
+   ```  
+4. Interrogate the tree   
+   Possibilities:
+   - Check if a word is in the tree
+     ```
+     tree.is_present("banana")
+     ```
+   - Search a word inside the tree
+     ```
+       tree.search_word("bana", false)
+     %>
+     ```
+    
