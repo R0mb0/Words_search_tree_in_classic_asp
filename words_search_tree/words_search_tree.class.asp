@@ -629,7 +629,7 @@
             Dim fso 
             Set fso = Server.CreateObject("Scripting.FileSystemObject")
             If Not(fso.FileExists(path) Or fso.FolderExists(path)) Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - The path is not valid")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class","save_tree - The path is not valid")
             End If 
             Set fso = Nothing
             Dim temp_string
