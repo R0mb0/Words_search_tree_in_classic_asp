@@ -501,7 +501,7 @@
             private_is_present = false 
         End Function 
 
-        'Private Function to check if a word is in the memory
+        'Function to check if a word is in the tree
         Public Function is_present(ByVal word)
             'If necessary throw error 
             create_allert "is_present", word
