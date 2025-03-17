@@ -458,7 +458,7 @@
         End Function 
 
         'Function to print all the elements inside the search tree 
-        Public Function Write_all_elements()
+        Public Function write_all_elements()
             If IsNull(terminator) Then 
                 Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "Write_all_elements - The class has not been initalizated")
             End If 
