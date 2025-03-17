@@ -337,7 +337,7 @@
         Private Function create_allert(ByVal string_function, ByVal data)
             'Check if the class has been initializated
             If IsNull(terminator) Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The class has not been initalizated")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The class has not been initializated")
             End If 
             'Check if the word is a letter
             If remove_letters and Not(Len(data) > 1) Then 
@@ -393,7 +393,7 @@
         Public Function add_text(ByVal text)
             'Check if the class has been initializated
             If IsNull(terminator) Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_text - The class has not been initalizated")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "add_text - The class has not been initializated")
             End If 
             'Check if the text is a text
             If Not(InStr(text, " ") <> 0) Then 
@@ -460,7 +460,7 @@
         'Function to print all the elements inside the search tree 
         Public Function write_all_elements()
             If IsNull(terminator) Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "Write_all_elements - The class has not been initalizated")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "Write_all_elements - The class has not been initializated")
             End If 
             Response.write write_array(base_array, false, "")
         End Function 
@@ -571,7 +571,7 @@
             End If 
             'Check if the class has been initializated
             If IsNull(terminator) Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The class has not been initalizated")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", string_function & " - The class has not been initializated")
             End If 
             'Check if the word is a letter
             'If remove_letters and Not(Len(data) > 1) Then 
