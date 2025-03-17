@@ -632,6 +632,12 @@
 
         'Function to save the tree in a file 
         Public Function save_tree(ByVal path)
+            Dim fso 
+            Set fso = Server.CreateObject("Scripting.FileSystemObject")
+            If Not(fso.FileExists(path) Or fso.FolderExists(path)) Then 
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - The path is not valid")
+            End If 
+            Set fso = Nothing
             Dim temp_string
             temp_string = serialize_array(base_array)
             'Save string to file 
@@ -690,6 +696,12 @@
 
         'Funtion to load the tree from a file 
         Public Function load_tree(ByVal path)
+            Dim fso 
+            Set fso = Server.CreateObject("Scripting.FileSystemObject")
+            If Not(fso.FileExists(path) Or fso.FolderExists(path)) Then 
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class","load_tree - The path is not valid")
+            End If 
+            Set fso = Nothing
             'Read part 
             Dim fs
             Dim t
