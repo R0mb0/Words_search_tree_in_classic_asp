@@ -35,19 +35,19 @@
         End Sub
             
         Sub class_terminate()
-            characters_array = nothing
-            letters_array = nothing
-            terminator = nothing
-            base_array = nothing
-            array_index = nothing
-            case_sensitive = nothing
-            remove_special_chars = nothing
-            remove_letters = nothing 
-            remove_numbers = nothing 
-            remove_all_numbers = nothing 
-            flag2 = nothing
-            absolute_index = nothing
-            temp_text = nothing
+            characters_array = Nothing
+            letters_array = Nothing
+            terminator = Nothing
+            base_array = Nothing
+            array_index = Nothing
+            case_sensitive = Nothing
+            remove_special_chars = Nothing
+            remove_letters = Nothing 
+            remove_numbers = Nothing 
+            remove_all_numbers = Nothing 
+            flag2 = Nothing
+            absolute_index = Nothing
+            temp_text = Nothing
         End Sub
 
         'Function to initialize the class with the terminator 
@@ -641,8 +641,8 @@
             Set f = fs.CreateTextFile(path, true)
             f.write(temp_string)
             f.close
-            Set f = nothing
-            Set fs = nothing
+            Set f = Nothing
+            Set fs = Nothing
             'End saving string to file 
             'Return for debug purpose
             save_tree = temp_string
@@ -704,8 +704,8 @@
             set t = fs.OpenTextFile(path, 1, false)
             s = t.ReadAll
             t.close
-            Set t = nothing
-            Set fs = nothing
+            Set t = Nothing
+            Set fs = Nothing
             'End read part
             'If necessary format base array
             If UBound(base_array) > 0 Then 
