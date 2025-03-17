@@ -20,6 +20,7 @@
 ![FlowChart](https://github.com/R0mb0/Words_search_tree_in_classic_asp/blob/main/Images/Search_tree.png)
 
 > #### ⚠️ Commenting `Private Function write_array(...)`
+> 
 > **In case of writing all tree's elements, the tree is explored in iterative way that produce a linear output**
 
 ## `words_search_tree.class.asp`'s avaible functions
