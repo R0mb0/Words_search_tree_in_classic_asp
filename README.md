@@ -65,7 +65,7 @@
    ```
 2. Add values to tree   
    Possibilities:  
-   - Load tree from file
+   - > Load tree from file
      ```asp
      tree.load_tree("path")
      ```
@@ -80,7 +80,7 @@
      tree.add_text("Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, che la diritta via era smarrita.")
      tree.add_text("Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte che nel pensier rinova la paura!")
      ```
-3. Save the state of tree
+3. > Save the state of tree
    ```asp
    tree.save_tree("path")
    ```  
