@@ -54,7 +54,7 @@
         Public Function initialize(ByVal termin, ByVal case_sens, ByVal remove_special_char, ByVal remove_lett, ByVal remove_numb, ByVal remove_all_numb)
             'Check if the terminator is a special character
             If Not(is_special_character(termin))Then 
-                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "initialize - The terminator: " & termin & " is not a special character or is "[", "]" for thi reason is not valid")
+                Call Err.Raise(vbObjectError + 10, "words_search_tree.class", "initialize - The terminator: " & termin & " is not a special character or is `[`, `]` for thi reason is not valid")
             End If
             'Check if the two params are not true simultaneously
             If remove_numb and remove_all_numb Then 
